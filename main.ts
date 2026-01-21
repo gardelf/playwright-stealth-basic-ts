@@ -1,6 +1,6 @@
 import { chromium } from "playwright-extra";
 
-async function main() {
+async function main(): Promise<void> {
   console.log("▶ Script iniciado");
 
   const browser = await chromium.launch({
@@ -17,4 +17,12 @@ async function main() {
   console.log("✔ Página cargada");
 
   await browser.close();
-  console.
+  console.log("■ Script terminado");
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error("❌ Error:", err);
+    process.exit(1);
+  });
