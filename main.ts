@@ -6,7 +6,7 @@ async function main(): Promise<void> {
   console.log("▶ Login TIMP iniciado");
 
   const browser = await chromium.launch({
-    headless: false, // VER navegador
+    headless: false,
     slowMo: 50,
   });
 
@@ -20,24 +20,23 @@ async function main(): Promise<void> {
   await page.fill('input[type="password"]', process.env.TIMP_PASSWORD || "");
   await page.click('button[type="submit"]');
 
-  console.log("⏳ Mete el código con calma. Esperando acceso al panel...");
+  console.log("🛑 EL SCRIPT ESTÁ PAUSADO");
+  console.log("👉 Mete el código");
+  console.log("👉 Entra en el panel");
+  console.log("👉 NO CIERRES EL NAVEGADOR");
+  console.log("👉 Cuando estés dentro, vuelve al terminal");
 
-  // 🔒 ESPERA CLARA A ESTAR DENTRO
-  await page.waitForSelector('a[href^="/admins"]', {
-    timeout: 180000, // 3 minutos
-  });
+  // ⛔ PAUSA ABSOLUTA
+  await page.pause();
 
-  console.log("✔ Login confirmado. Guardando sesión...");
+  // 👇 SOLO SE EJECUTA CUANDO TÚ REANUDAS
+  console.log("✔ Reanudado. Guardando sesión...");
 
   await context.storageState({ path: "timp-session.json" });
+  console.log("✔ Sesión guardada");
 
-  console.log("✔ Sesión guardada correctamente");
-
-  // ⏸️ Pausa opcional para comprobar visualmente
-  await page.waitForTimeout(3000);
-
-  await browser.close();
-  console.log("■ Fin");
+  // ❌ NO CERRAMOS EL BROWSER AUTOMÁTICAMENTE
+  console.log("🟢 Puedes cerrar Chromium a mano");
 }
 
 main().catch(err => {
