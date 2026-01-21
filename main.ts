@@ -7,7 +7,7 @@ async function main(): Promise<void> {
 
   const browser = await chromium.launch({
     headless: false, // VER navegador
-    slowMo: 50,      // más humano
+    slowMo: 50,
   });
 
   const context = await browser.newContext();
@@ -15,25 +15,32 @@ async function main(): Promise<void> {
 
   await page.goto(LOGIN_URL, { waitUntil: "networkidle" });
 
-  // Email y contraseña
+  // Login
   await page.fill('input[type="email"]', process.env.TIMP_EMAIL || "");
   await page.fill('input[type="password"]', process.env.TIMP_PASSWORD || "");
   await page.click('button[type="submit"]');
 
-  console.log("⏸️ Script en pausa. Mete el código tranquilamente.");
+  console.log("⏳ Mete el código con calma. Esperando acceso al panel...");
 
-  // 🔴 AQUÍ SE PARA TODO
-  await page.pause();
+  // 🔒 ESPERA CLARA A ESTAR DENTRO
+  await page.waitForSelector('a[href^="/admins"]', {
+    timeout: 180000, // 3 minutos
+  });
 
-  // Cuando tú cierres la pausa manualmente:
+  console.log("✔ Login confirmado. Guardando sesión...");
+
   await context.storageState({ path: "timp-session.json" });
-  console.log("✔ Sesión guardada");
+
+  console.log("✔ Sesión guardada correctamente");
+
+  // ⏸️ Pausa opcional para comprobar visualmente
+  await page.waitForTimeout(3000);
 
   await browser.close();
   console.log("■ Fin");
 }
 
 main().catch(err => {
-  console.error(err);
+  console.error("❌ Error:", err);
   process.exit(1);
 });
